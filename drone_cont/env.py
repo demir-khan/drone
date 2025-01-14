@@ -64,10 +64,10 @@ class DroneEnv(gym.Env):
         self.pos = next_pos
 
         # randomise yaw and look target -> learns to move towards look target regardless of yaw 
-        self.yaw = np.random.rand() * 2 * np.pi #(self.yaw + 0.1) % (2 * np.pi)
+        #self.yaw = np.random.rand() * 2 * np.pi #(self.yaw + 0.1) % (2 * np.pi)
         self.look_target = np.random.randint(-10, 11, 3)
         #self.look_target = np.clip(self.look_target + (np.random.randn(3) / 5), -10, 10)
-        #self.yaw = np.arctan2(self.pos[1] - self.look_target[1], self.pos[0] - self.look_target[0])
+        self.yaw = np.arctan2(self.pos[1] - self.look_target[1], self.pos[0] - self.look_target[0])
 
         observation = self.get_observation()
 
