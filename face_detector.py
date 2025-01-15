@@ -1,12 +1,16 @@
 import cv2
+from djitellopy import Tello
+
+# Connecting to Tello
+tello = Tello()
+tello.connect()
+tello.streamon()
+cap = tello.get_frame_read()
+print(f"Battery Life Percentage: {tello.get_battery()}%")
 
 face_classifier = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
 )
-
-# Accessing the webcam (Drone camera in future use)
-# Parameter 0 means to access default camera on the device
-video_capture = cv2.VideoCapture(0)
 
 def detect_bounding_box(vid):
     gray_image = cv2.cvtColor(vid, cv2.COLOR_BGR2GRAY)
@@ -16,21 +20,18 @@ def detect_bounding_box(vid):
     return faces
 
 while True:
-
-    result, video_frame = video_capture.read()  # read frames from the video
-    if result is False:
-        break  # terminate the loop if the frame is not read successfully
+    frame = cap.frame
+    frame = cv2.resize(frame, (960, 720))
 
     faces = detect_bounding_box(
-        video_frame
-    )  # apply the function we created to the video frame
+        frame
+    ) 
 
-    cv2.imshow(
-        "My Face Detection Project", video_frame
-    )  # display the processed frame in a window named "My Face Detection Project"
+    cv2.imshow("Tello Stream", frame)
 
+    # Press q to exit video feed
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
-video_capture.release()
+tello.streamoff()
 cv2.destroyAllWindows()
